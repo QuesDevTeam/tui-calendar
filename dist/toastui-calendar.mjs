@@ -31,7 +31,7 @@ var __objRest = (source, exclude) => {
 };
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Mon Aug 28 2023
+ * @version 2.1.3 | Tue Aug 29 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
