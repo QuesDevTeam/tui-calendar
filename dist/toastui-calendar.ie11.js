@@ -18370,7 +18370,8 @@ function getEventItemStyle(_ref) {
     overflow: 'hidden',
     height: eventHeight,
     lineHeight: '24px',
-    opacity: isDraggingTarget ? 0.5 : 1
+    opacity: isDraggingTarget ? 0.5 : 1,
+    border: exceedLeft ? 'none' : "1px solid ".concat(borderColor)
   };
   var margins = getMargins(flat);
   return flat ? horizontalEvent_objectSpread({
@@ -18570,7 +18571,7 @@ function HorizontalEvent(_ref4) {
     className: classNames.eventBody,
     style: horizontalEvent_objectSpread(horizontalEvent_objectSpread({}, eventItemStyle), {}, {
       backgroundColor: isDotEvent ? null : eventItemStyle.backgroundColor,
-      borderLeft: isDotEvent ? null : eventItemStyle.borderLeft
+      border: isDotEvent ? null : eventItemStyle.border
     }),
     onMouseDown: handleMoveStart
   }, isDotEvent ? h("span", {
