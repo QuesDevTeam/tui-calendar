@@ -16675,6 +16675,7 @@ function month_arrayLikeToArray(arr, len) { if (len == null || len > arr.length)
 
 
 
+
 /**
  * Filter function for find allday event
  * @param {EventUIModel} uiModel - ui model
@@ -16851,7 +16852,7 @@ function month_findByDateRange(calendarData, condition) {
 
   _adjustRenderRange(start, end, uiModelColl);
 
-  var vList = uiModelColl.sort(array.compare.event.asc);
+  var vList = uiModelColl.toArray();
   var usingTravelTime = false;
   var collisionGroup = getCollisionGroup(vList, usingTravelTime);
   var matrices = getMatrices(uiModelColl, collisionGroup, usingTravelTime);
