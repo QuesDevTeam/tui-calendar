@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Tue Aug 29 2023
+ * @version 2.1.3 | Thu Aug 31 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -14909,7 +14909,8 @@ function initializeMonthOptions() {
     narrowWeekend: false,
     startDayOfWeek: Day.SUN,
     isAlways6Weeks: true,
-    visibleEventCount: 6
+    visibleEventCount: 6,
+    isOneEventCalendar: false
   }, monthOptions);
 
   if (month.dayNames.length === 0) {
@@ -18427,7 +18428,9 @@ function HorizontalEvent(_ref4) {
       _ref4$resizingWidth = _ref4.resizingWidth,
       resizingWidth = _ref4$resizingWidth === void 0 ? null : _ref4$resizingWidth,
       _ref4$movingLeft = _ref4.movingLeft,
-      movingLeft = _ref4$movingLeft === void 0 ? null : _ref4$movingLeft;
+      movingLeft = _ref4$movingLeft === void 0 ? null : _ref4$movingLeft,
+      _ref4$isOneEventCalen = _ref4.isOneEventCalendar,
+      isOneEventCalendar = _ref4$isOneEventCalen === void 0 ? false : _ref4$isOneEventCalen;
 
   var _useStore = useStore(viewSelector),
       currentView = _useStore.currentView;
@@ -18562,14 +18565,21 @@ function HorizontalEvent(_ref4) {
       'weekday-exceed-left': uiModel.exceedLeft,
       'weekday-exceed-right': uiModel.exceedRight
     }),
-    style: containerStyle,
+    style: horizontalEvent_objectSpread(horizontalEvent_objectSpread({}, containerStyle), {}, {
+      height: isOneEventCalendar ? 'calc(100% - 1px)' : 'unset',
+      top: isOneEventCalendar ? 1 : containerStyle.top
+    }),
     "data-testid": passConditionalProp(isDraggableEvent, getTestId(uiModel)),
     "data-calendar-id": calendarId,
     "data-event-id": id,
     ref: eventContainerRef
   }, h("div", {
     className: classNames.eventBody,
-    style: horizontalEvent_objectSpread(horizontalEvent_objectSpread({}, eventItemStyle), {}, {
+    style: isOneEventCalendar ? {
+      height: '100%',
+      border: 'none',
+      backgroundColor: eventItemStyle.backgroundColor
+    } : horizontalEvent_objectSpread(horizontalEvent_objectSpread({}, eventItemStyle), {}, {
       backgroundColor: isDotEvent ? null : eventItemStyle.backgroundColor,
       border: isDotEvent ? null : eventItemStyle.border
     }),
@@ -24805,6 +24815,7 @@ function CellHeader(_ref2) {
 
 
 
+
 function gridCell_slicedToArray(arr, i) { return gridCell_arrayWithHoles(arr) || gridCell_iterableToArrayLimit(arr, i) || gridCell_unsupportedIterableToArray(arr, i) || gridCell_nonIterableRest(); }
 
 function gridCell_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -24974,7 +24985,8 @@ function gridCell_GridCell(_ref3) {
       events = _ref3$events === void 0 ? [] : _ref3$events,
       style = _ref3.style,
       parentContainer = _ref3.parentContainer,
-      contentAreaHeight = _ref3.contentAreaHeight;
+      contentAreaHeight = _ref3.contentAreaHeight,
+      isOneEventCalendar = _ref3.isOneEventCalendar;
   var layoutContainer = useLayoutContainer();
 
   var _useDispatch = useDispatch('popup'),
@@ -24995,9 +25007,10 @@ function gridCell_GridCell(_ref3) {
       });
     }
   }, [date, events, popupPosition, showSeeMorePopup]);
-  var exceedCount = getExceedCount(events, contentAreaHeight, MONTH_EVENT_HEIGHT + MONTH_EVENT_MARGIN_TOP);
+  var monthEventHeight = isOneEventCalendar ? 0 : MONTH_EVENT_HEIGHT;
+  var exceedCount = getExceedCount(events, contentAreaHeight, monthEventHeight + MONTH_EVENT_MARGIN_TOP);
   return h("div", {
-    className: cls('daygrid-cell'),
+    className: "".concat(cls('daygrid-cell'), " ").concat(isOneEventCalendar ? cls('daygrid-cell-custom-disabled') : ''),
     style: gridCell_objectSpread(gridCell_objectSpread({}, style), {}, {
       backgroundColor: isWeekend(date.getDay()) ? backgroundColor : 'inherit'
     }),
@@ -25055,7 +25068,9 @@ var GridRow = compat_module_g(function GridRow(_ref) {
       rowInfo = _ref.rowInfo,
       _ref$gridDateEventMod = _ref.gridDateEventModelMap,
       gridDateEventModelMap = _ref$gridDateEventMod === void 0 ? {} : _ref$gridDateEventMod,
-      contentAreaHeight = _ref.contentAreaHeight;
+      contentAreaHeight = _ref.contentAreaHeight,
+      _ref$isOneEventCalend = _ref.isOneEventCalendar,
+      isOneEventCalendar = _ref$isOneEventCalend === void 0 ? false : _ref$isOneEventCalend;
 
   var _useDOMNode = useDOMNode(),
       _useDOMNode2 = gridRow_slicedToArray(_useDOMNode, 2),
@@ -25086,7 +25101,8 @@ var GridRow = compat_module_g(function GridRow(_ref) {
       },
       parentContainer: container,
       events: gridDateEventModelMap[ymd],
-      contentAreaHeight: contentAreaHeight
+      contentAreaHeight: contentAreaHeight,
+      isOneEventCalendar: isOneEventCalendar
     });
   }));
 });
@@ -25135,21 +25151,28 @@ var MonthEvents = compat_module_g(function MonthEvents(_ref) {
       eventHeight = _ref$eventHeight === void 0 ? EVENT_HEIGHT : _ref$eventHeight,
       events = _ref.events,
       name = _ref.name,
-      className = _ref.className;
+      className = _ref.className,
+      _ref$isOneEventCalend = _ref.isOneEventCalendar,
+      isOneEventCalendar = _ref$isOneEventCalend === void 0 ? false : _ref$isOneEventCalend;
 
   var _useTheme = useTheme(monthGridCellSelector),
       headerHeight = _useTheme.headerHeight;
 
-  var dayEvents = events.filter(isWithinHeight(contentAreaHeight, eventHeight + MONTH_EVENT_MARGIN_TOP)).map(function (uiModel) {
+  var parsedEventHeight = isOneEventCalendar ? 0 : eventHeight;
+  var dayEvents = events.filter(isWithinHeight(contentAreaHeight, parsedEventHeight + MONTH_EVENT_MARGIN_TOP)).map(function (uiModel) {
     return h(HorizontalEvent, {
       key: "".concat(name, "-DayEvent-").concat(uiModel.cid()),
       uiModel: uiModel,
       eventHeight: eventHeight,
-      headerHeight: headerHeight !== null && headerHeight !== void 0 ? headerHeight : MONTH_CELL_BAR_HEIGHT
+      headerHeight: headerHeight !== null && headerHeight !== void 0 ? headerHeight : MONTH_CELL_BAR_HEIGHT,
+      isOneEventCalendar: isOneEventCalendar
     });
   });
   return h("div", {
-    className: className
+    className: className,
+    style: isOneEventCalendar ? {
+      height: '100%'
+    } : {}
   }, dayEvents);
 });
 ;// CONCATENATED MODULE: ./src/hooks/dayGridMonth/useDayGridMonthEventMove.ts
@@ -25610,7 +25633,9 @@ function DayGridMonth(_ref) {
       _ref$rowInfo = _ref.rowInfo,
       rowInfo = _ref$rowInfo === void 0 ? [] : _ref$rowInfo,
       _ref$cellWidthMap = _ref.cellWidthMap,
-      cellWidthMap = _ref$cellWidthMap === void 0 ? [] : _ref$cellWidthMap;
+      cellWidthMap = _ref$cellWidthMap === void 0 ? [] : _ref$cellWidthMap,
+      _ref$isOneEventCalend = _ref.isOneEventCalendar,
+      isOneEventCalendar = _ref$isOneEventCalend === void 0 ? false : _ref$isOneEventCalend;
 
   var _useDOMNode = useDOMNode(),
       _useDOMNode2 = dayGridMonth_slicedToArray(_useDOMNode, 2),
@@ -25675,13 +25700,15 @@ function DayGridMonth(_ref) {
       gridDateEventModelMap: gridDateEventModelMap,
       week: week,
       rowInfo: rowInfo,
-      contentAreaHeight: cellContentAreaHeight
+      contentAreaHeight: cellContentAreaHeight,
+      isOneEventCalendar: isOneEventCalendar
     }), h(MonthEvents, {
       name: "month",
       events: uiModels,
       contentAreaHeight: cellContentAreaHeight,
       eventHeight: MONTH_EVENT_HEIGHT,
-      className: cls('weekday-events')
+      className: cls('weekday-events'),
+      isOneEventCalendar: isOneEventCalendar
     }), h(GridSelectionByRow, {
       weekDates: week,
       narrowWeekend: narrowWeekend,
@@ -25811,7 +25838,8 @@ function Month() {
   }), h(DayGridMonth, {
     dateMatrix: dateMatrix,
     rowInfo: rowInfo,
-    cellWidthMap: cellWidthMap
+    cellWidthMap: cellWidthMap,
+    isOneEventCalendar: monthOptions.isOneEventCalendar
   }));
 }
 ;// CONCATENATED MODULE: ./src/components/view/week.tsx

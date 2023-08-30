@@ -8,5 +8,7 @@ interface Props {
     flat?: boolean;
     movingLeft?: number | null;
 }
-export declare function HorizontalEvent({ flat, uiModel, eventHeight, headerHeight, resizingWidth, movingLeft, }: Props): h.JSX.Element;
+export declare function HorizontalEvent({ flat, uiModel, eventHeight, headerHeight, resizingWidth, movingLeft, isOneEventCalendar, }: Props & {
+    isOneEventCalendar?: boolean;
+}): h.JSX.Element;
 export {};

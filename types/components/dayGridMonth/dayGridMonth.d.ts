@@ -5,6 +5,7 @@ interface Props {
     dateMatrix: TZDate[][];
     rowInfo: CellInfo[];
     cellWidthMap: string[][];
+    isOneEventCalendar?: boolean;
 }
-export declare function DayGridMonth({ dateMatrix, rowInfo, cellWidthMap }: Props): h.JSX.Element;
+export declare function DayGridMonth({ dateMatrix, rowInfo, cellWidthMap, isOneEventCalendar, }: Props): h.JSX.Element;
 export {};
