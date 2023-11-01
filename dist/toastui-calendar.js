@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Thu Aug 31 2023
+ * @version 2.1.3 | Wed Nov 01 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -17510,6 +17510,22 @@ function getDateColor(_ref) {
   return dayName.color;
 }
 
+function getDateDisplay(_ref2) {
+  let {
+    isOneEventCalendar,
+    date,
+    renderDate
+  } = _ref2;
+  const thisMonth = renderDate.getMonth();
+  const isSameMonth = thisMonth === date.getMonth();
+
+  if (isOneEventCalendar && !isSameMonth) {
+    return 'none';
+  }
+
+  return 'inline-block';
+}
+
 function useCellHeaderTheme() {
   const common = useCommonTheme();
   const month = useMonthTheme();
@@ -17519,13 +17535,14 @@ function useCellHeaderTheme() {
   }), [common, month]);
 }
 
-function CellHeader(_ref2) {
+function CellHeader(_ref3) {
   let {
     type = CellBarType.header,
     exceedCount = 0,
     date,
-    onClickExceedCount
-  } = _ref2;
+    onClickExceedCount,
+    isOneEventCalendar
+  } = _ref3;
   const {
     renderDate
   } = useStore(viewSelector);
@@ -17550,6 +17567,11 @@ function CellHeader(_ref2) {
       theme,
       isToday,
       renderDate
+    }),
+    display: getDateDisplay({
+      date,
+      renderDate,
+      isOneEventCalendar
     })
   };
   const monthGridTemplate = "monthGrid".concat(capitalize(type));
@@ -17768,12 +17790,14 @@ function gridCell_GridCell(_ref3) {
     type: CellBarType.header,
     exceedCount: exceedCount,
     date: date,
-    onClickExceedCount: onOpenSeeMorePopup
+    onClickExceedCount: onOpenSeeMorePopup,
+    isOneEventCalendar: isOneEventCalendar
   }), h(CellHeader, {
     type: CellBarType.footer,
     exceedCount: exceedCount,
     date: date,
-    onClickExceedCount: onOpenSeeMorePopup
+    onClickExceedCount: onOpenSeeMorePopup,
+    isOneEventCalendar: isOneEventCalendar
   }));
 }
 ;// CONCATENATED MODULE: ./src/components/dayGridMonth/gridRow.tsx

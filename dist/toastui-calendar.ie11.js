@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Thu Aug 31 2023
+ * @version 2.1.3 | Wed Nov 01 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -24723,6 +24723,20 @@ function getDateColor(_ref) {
   return dayName.color;
 }
 
+function getDateDisplay(_ref2) {
+  var isOneEventCalendar = _ref2.isOneEventCalendar,
+      date = _ref2.date,
+      renderDate = _ref2.renderDate;
+  var thisMonth = renderDate.getMonth();
+  var isSameMonth = thisMonth === date.getMonth();
+
+  if (isOneEventCalendar && !isSameMonth) {
+    return 'none';
+  }
+
+  return 'inline-block';
+}
+
 function useCellHeaderTheme() {
   var common = useCommonTheme();
   var month = useMonthTheme();
@@ -24734,13 +24748,14 @@ function useCellHeaderTheme() {
   }, [common, month]);
 }
 
-function CellHeader(_ref2) {
-  var _ref2$type = _ref2.type,
-      type = _ref2$type === void 0 ? CellBarType.header : _ref2$type,
-      _ref2$exceedCount = _ref2.exceedCount,
-      exceedCount = _ref2$exceedCount === void 0 ? 0 : _ref2$exceedCount,
-      date = _ref2.date,
-      onClickExceedCount = _ref2.onClickExceedCount;
+function CellHeader(_ref3) {
+  var _ref3$type = _ref3.type,
+      type = _ref3$type === void 0 ? CellBarType.header : _ref3$type,
+      _ref3$exceedCount = _ref3.exceedCount,
+      exceedCount = _ref3$exceedCount === void 0 ? 0 : _ref3$exceedCount,
+      date = _ref3.date,
+      onClickExceedCount = _ref3.onClickExceedCount,
+      isOneEventCalendar = _ref3.isOneEventCalendar;
 
   var _useStore = useStore(viewSelector),
       renderDate = _useStore.renderDate;
@@ -24769,6 +24784,11 @@ function CellHeader(_ref2) {
       theme: theme,
       isToday: isToday,
       renderDate: renderDate
+    }),
+    display: getDateDisplay({
+      date: date,
+      renderDate: renderDate,
+      isOneEventCalendar: isOneEventCalendar
     })
   };
   var monthGridTemplate = "monthGrid".concat(capitalize(type));
@@ -25019,12 +25039,14 @@ function gridCell_GridCell(_ref3) {
     type: CellBarType.header,
     exceedCount: exceedCount,
     date: date,
-    onClickExceedCount: onOpenSeeMorePopup
+    onClickExceedCount: onOpenSeeMorePopup,
+    isOneEventCalendar: isOneEventCalendar
   }), h(CellHeader, {
     type: CellBarType.footer,
     exceedCount: exceedCount,
     date: date,
-    onClickExceedCount: onOpenSeeMorePopup
+    onClickExceedCount: onOpenSeeMorePopup,
+    isOneEventCalendar: isOneEventCalendar
   }));
 }
 ;// CONCATENATED MODULE: ./src/components/dayGridMonth/gridRow.tsx
