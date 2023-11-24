@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Wed Nov 01 2023
+ * @version 2.1.3 | Fri Nov 24 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -17416,44 +17416,7 @@ function AccumulatedGridSelection(_ref) {
     narrowWeekend: narrowWeekend
   }) : null));
 }
-;// CONCATENATED MODULE: ./src/components/dayGridMonth/moreEventsButton.tsx
-
-
-
-
-function MoreEventsButton(_ref) {
-  let {
-    type,
-    number,
-    onClickButton,
-    className
-  } = _ref;
-  const {
-    reset
-  } = useDispatch('dnd'); // prevent unexpected grid selection when clicking on the button
-
-  const handleMouseDown = e => {
-    e.stopPropagation();
-  };
-
-  const handleClick = () => {
-    reset();
-    onClickButton();
-  };
-
-  const exceedButtonTemplate = "monthGrid".concat(type === CellBarType.header ? 'Header' : 'Footer', "Exceed");
-  return h("button", {
-    type: "button",
-    onMouseDown: handleMouseDown,
-    onClick: handleClick,
-    className: className
-  }, h(Template, {
-    template: exceedButtonTemplate,
-    param: number
-  }));
-}
 ;// CONCATENATED MODULE: ./src/components/dayGridMonth/cellHeader.tsx
-
 
 
 
@@ -17591,12 +17554,7 @@ function CellHeader(_ref3) {
   }, h(Template, {
     template: monthGridTemplate,
     param: templateParam
-  })), exceedCount ? h(MoreEventsButton, {
-    type: type,
-    number: exceedCount,
-    onClickButton: onClickExceedCount,
-    className: cls('grid-cell-more-events')
-  }) : null);
+  })));
 }
 ;// CONCATENATED MODULE: ./src/components/dayGridMonth/gridCell.tsx
 
@@ -17816,7 +17774,8 @@ const GridRow = compat_module_g(function GridRow(_ref) {
     rowInfo,
     gridDateEventModelMap = {},
     contentAreaHeight,
-    isOneEventCalendar = false
+    isOneEventCalendar = false,
+    height
   } = _ref;
   const [container, containerRefCallback] = useDOMNode();
   const border = useTheme(hooks_module_T(theme => theme.common.border, []));
@@ -17833,12 +17792,16 @@ const GridRow = compat_module_g(function GridRow(_ref) {
       left
     } = rowInfo[columnIndex];
     const ymd = datetime_toFormat(toStartOfDay(date), 'YYYYMMDD');
+    const heightStyle = height ? {
+      height
+    } : {};
     return h(gridCell_GridCell, {
       key: "daygrid-cell-".concat(dayIndex),
       date: date,
       style: {
         width: toPercent(width),
-        left: toPercent(left)
+        left: toPercent(left),
+        ...heightStyle
       },
       parentContainer: container,
       events: gridDateEventModelMap[ymd],
@@ -17883,7 +17846,7 @@ function GridSelectionByRow(_ref) {
 
 const MonthEvents = compat_module_g(function MonthEvents(_ref) {
   let {
-    contentAreaHeight,
+    // contentAreaHeight,
     eventHeight = EVENT_HEIGHT,
     events,
     name,
@@ -17892,9 +17855,10 @@ const MonthEvents = compat_module_g(function MonthEvents(_ref) {
   } = _ref;
   const {
     headerHeight
-  } = useTheme(monthGridCellSelector);
-  const parsedEventHeight = isOneEventCalendar ? 0 : eventHeight;
-  const dayEvents = events.filter(isWithinHeight(contentAreaHeight, parsedEventHeight + MONTH_EVENT_MARGIN_TOP)).map(uiModel => h(HorizontalEvent, {
+  } = useTheme(monthGridCellSelector); // const parsedEventHeight = isOneEventCalendar ? 0 : eventHeight;
+
+  const dayEvents = events // .filter(isWithinHeight(contentAreaHeight, parsedEventHeight + MONTH_EVENT_MARGIN_TOP))
+  .map(uiModel => h(HorizontalEvent, {
     key: "".concat(name, "-DayEvent-").concat(uiModel.cid()),
     uiModel: uiModel,
     eventHeight: eventHeight,
@@ -18290,21 +18254,32 @@ function DayGridMonth(_ref) {
       uiModels,
       gridDateEventModelMap
     } = renderedEventUIModels[rowIndex];
+    const eventCountPerDay = Object.entries(gridDateEventModelMap).map(_ref2 => {
+      let [_, value] = _ref2;
+      return value.length;
+    });
+    const maxEventCountPerWeek = Math.max(...eventCountPerDay) + 1;
+    const weekHeight = maxEventCountPerWeek * MONTH_EVENT_HEIGHT;
     return h("div", {
       key: "dayGrid-events-".concat(rowIndex),
       className: cls('month-week-item'),
       style: {
-        height: toPercent(rowHeight)
+        height: toPercent(rowHeight),
+        overflow: 'auto'
       },
       ref: ref
     }, h("div", {
-      className: cls('weekday')
+      className: cls('weekday'),
+      style: {
+        height: weekHeight
+      }
     }, h(GridRow, {
       gridDateEventModelMap: gridDateEventModelMap,
       week: week,
       rowInfo: rowInfo,
       contentAreaHeight: cellContentAreaHeight,
-      isOneEventCalendar: isOneEventCalendar
+      isOneEventCalendar: isOneEventCalendar,
+      height: weekHeight
     }), h(MonthEvents, {
       name: "month",
       events: uiModels,

@@ -31,7 +31,7 @@ var __objRest = (source, exclude) => {
 };
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Wed Nov 01 2023
+ * @version 2.1.3 | Fri Nov 24 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -8984,26 +8984,6 @@ function AccumulatedGridSelection({ rowIndex, weekDates, narrowWeekend }) {
     narrowWeekend
   }) : null));
 }
-function MoreEventsButton({ type, number, onClickButton, className: className2 }) {
-  const { reset } = useDispatch("dnd");
-  const handleMouseDown = (e2) => {
-    e2.stopPropagation();
-  };
-  const handleClick = () => {
-    reset();
-    onClickButton();
-  };
-  const exceedButtonTemplate = `monthGrid${type === CellBarType.header ? "Header" : "Footer"}Exceed`;
-  return /* @__PURE__ */ h$3("button", {
-    type: "button",
-    onMouseDown: handleMouseDown,
-    onClick: handleClick,
-    className: className2
-  }, /* @__PURE__ */ h$3(Template, {
-    template: exceedButtonTemplate,
-    param: number
-  }));
-}
 function getDateColor({
   date: date2,
   theme,
@@ -9088,12 +9068,7 @@ function CellHeader({
   }, /* @__PURE__ */ h$3(Template, {
     template: monthGridTemplate,
     param: templateParam
-  })), exceedCount ? /* @__PURE__ */ h$3(MoreEventsButton, {
-    type,
-    number: exceedCount,
-    onClickButton: onClickExceedCount,
-    className: cls("grid-cell-more-events")
-  }) : null);
+  })));
 }
 function getSeeMorePopupSize({
   grid,
@@ -9238,7 +9213,8 @@ const GridRow = g$1(function GridRow2({
   rowInfo,
   gridDateEventModelMap = {},
   contentAreaHeight,
-  isOneEventCalendar = false
+  isOneEventCalendar = false,
+  height
 }) {
   const [container, containerRefCallback] = useDOMNode();
   const border = useTheme(T$1((theme) => theme.common.border, []));
@@ -9250,13 +9226,14 @@ const GridRow = g$1(function GridRow2({
     const dayIndex = date2.getDay();
     const { width, left } = rowInfo[columnIndex];
     const ymd = toFormat(toStartOfDay(date2), "YYYYMMDD");
+    const heightStyle = height ? { height } : {};
     return /* @__PURE__ */ h$3(GridCell, {
       key: `daygrid-cell-${dayIndex}`,
       date: date2,
-      style: {
+      style: __spreadValues({
         width: toPercent(width),
         left: toPercent(left)
-      },
+      }, heightStyle),
       parentContainer: container,
       events: gridDateEventModelMap[ymd],
       contentAreaHeight,
@@ -9277,7 +9254,6 @@ function GridSelectionByRow({ weekDates, narrowWeekend, rowIndex }) {
   });
 }
 const MonthEvents = g$1(function MonthEvents2({
-  contentAreaHeight,
   eventHeight = EVENT_HEIGHT,
   events,
   name,
@@ -9285,8 +9261,7 @@ const MonthEvents = g$1(function MonthEvents2({
   isOneEventCalendar = false
 }) {
   const { headerHeight } = useTheme(monthGridCellSelector);
-  const parsedEventHeight = isOneEventCalendar ? 0 : eventHeight;
-  const dayEvents = events.filter(isWithinHeight(contentAreaHeight, parsedEventHeight + MONTH_EVENT_MARGIN_TOP)).map((uiModel) => /* @__PURE__ */ h$3(HorizontalEvent, {
+  const dayEvents = events.map((uiModel) => /* @__PURE__ */ h$3(HorizontalEvent, {
     key: `${name}-DayEvent-${uiModel.cid()}`,
     uiModel,
     eventHeight,
@@ -9548,19 +9523,24 @@ function DayGridMonth({
     className: cls("month-daygrid")
   }, dateMatrix.map((week, rowIndex) => {
     const { uiModels, gridDateEventModelMap } = renderedEventUIModels[rowIndex];
+    const eventCountPerDay = Object.entries(gridDateEventModelMap).map(([_2, value]) => value.length);
+    const maxEventCountPerWeek = Math.max(...eventCountPerDay) + 1;
+    const weekHeight = maxEventCountPerWeek * MONTH_EVENT_HEIGHT;
     return /* @__PURE__ */ h$3("div", {
       key: `dayGrid-events-${rowIndex}`,
       className: cls("month-week-item"),
-      style: { height: toPercent(rowHeight) },
+      style: { height: toPercent(rowHeight), overflow: "auto" },
       ref
     }, /* @__PURE__ */ h$3("div", {
-      className: cls("weekday")
+      className: cls("weekday"),
+      style: { height: weekHeight }
     }, /* @__PURE__ */ h$3(GridRow, {
       gridDateEventModelMap,
       week,
       rowInfo,
       contentAreaHeight: cellContentAreaHeight,
-      isOneEventCalendar
+      isOneEventCalendar,
+      height: weekHeight
     }), /* @__PURE__ */ h$3(MonthEvents, {
       name: "month",
       events: uiModels,
