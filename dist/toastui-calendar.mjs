@@ -9217,10 +9217,8 @@ const GridRow = g$1(function GridRow2({
   height
 }) {
   const [container, containerRefCallback] = useDOMNode();
-  const border = useTheme(T$1((theme) => theme.common.border, []));
   return /* @__PURE__ */ h$3("div", {
     className: cls("weekday-grid"),
-    style: { borderTop: border },
     ref: containerRefCallback
   }, week.map((date2, columnIndex) => {
     const dayIndex = date2.getDay();
@@ -9523,13 +9521,14 @@ function DayGridMonth({
     className: cls("month-daygrid")
   }, dateMatrix.map((week, rowIndex) => {
     const { uiModels, gridDateEventModelMap } = renderedEventUIModels[rowIndex];
+    const { border } = DEFAULT_COMMON_THEME;
     const eventCountPerDay = Object.entries(gridDateEventModelMap).map(([_2, value]) => value.length);
     const maxEventCountPerWeek = Math.max(...eventCountPerDay) + 1;
     const weekHeight = maxEventCountPerWeek * MONTH_EVENT_HEIGHT;
     return /* @__PURE__ */ h$3("div", {
       key: `dayGrid-events-${rowIndex}`,
       className: cls("month-week-item"),
-      style: { height: toPercent(rowHeight), overflow: "auto" },
+      style: { height: toPercent(rowHeight), overflow: "auto", borderTop: border },
       ref
     }, /* @__PURE__ */ h$3("div", {
       className: cls("weekday"),

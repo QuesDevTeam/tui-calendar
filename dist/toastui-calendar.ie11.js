@@ -25053,8 +25053,6 @@ function gridRow_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
-
 var GridRow = compat_module_g(function GridRow(_ref) {
   var week = _ref.week,
       rowInfo = _ref.rowInfo,
@@ -25068,16 +25066,11 @@ var GridRow = compat_module_g(function GridRow(_ref) {
   var _useDOMNode = useDOMNode(),
       _useDOMNode2 = gridRow_slicedToArray(_useDOMNode, 2),
       container = _useDOMNode2[0],
-      containerRefCallback = _useDOMNode2[1];
+      containerRefCallback = _useDOMNode2[1]; // const border = useTheme(useCallback((theme) => theme.common.border, []));
 
-  var border = useTheme(hooks_module_T(function (theme) {
-    return theme.common.border;
-  }, []));
+
   return h("div", {
     className: cls('weekday-grid'),
-    style: {
-      borderTop: border
-    },
     ref: containerRefCallback
   }, week.map(function (date, columnIndex) {
     var dayIndex = date.getDay();
@@ -25598,6 +25591,7 @@ function dayGridMonth_arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; 
 
 
 
+
 var TOTAL_PERCENT_HEIGHT = 100;
 
 function useCellContentAreaHeight(eventHeight) {
@@ -25690,6 +25684,7 @@ function DayGridMonth(_ref) {
     var _renderedEventUIModel = renderedEventUIModels[rowIndex],
         uiModels = _renderedEventUIModel.uiModels,
         gridDateEventModelMap = _renderedEventUIModel.gridDateEventModelMap;
+    var border = DEFAULT_COMMON_THEME.border;
     var eventCountPerDay = Object.entries(gridDateEventModelMap).map(function (_ref3) {
       var _ref4 = dayGridMonth_slicedToArray(_ref3, 2),
           _ = _ref4[0],
@@ -25704,7 +25699,8 @@ function DayGridMonth(_ref) {
       className: cls('month-week-item'),
       style: {
         height: toPercent(rowHeight),
-        overflow: 'auto'
+        overflow: 'auto',
+        borderTop: border
       },
       ref: ref
     }, h("div", {

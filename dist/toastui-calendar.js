@@ -17766,8 +17766,6 @@ function gridCell_GridCell(_ref3) {
 
 
 
-
-
 const GridRow = compat_module_g(function GridRow(_ref) {
   let {
     week,
@@ -17777,13 +17775,10 @@ const GridRow = compat_module_g(function GridRow(_ref) {
     isOneEventCalendar = false,
     height
   } = _ref;
-  const [container, containerRefCallback] = useDOMNode();
-  const border = useTheme(hooks_module_T(theme => theme.common.border, []));
+  const [container, containerRefCallback] = useDOMNode(); // const border = useTheme(useCallback((theme) => theme.common.border, []));
+
   return h("div", {
     className: cls('weekday-grid'),
-    style: {
-      borderTop: border
-    },
     ref: containerRefCallback
   }, week.map((date, columnIndex) => {
     const dayIndex = date.getDay();
@@ -18179,6 +18174,7 @@ function ResizingGuideByRow(_ref) {
 
 
 
+
 const TOTAL_PERCENT_HEIGHT = 100;
 
 function useCellContentAreaHeight(eventHeight) {
@@ -18254,6 +18250,9 @@ function DayGridMonth(_ref) {
       uiModels,
       gridDateEventModelMap
     } = renderedEventUIModels[rowIndex];
+    const {
+      border
+    } = DEFAULT_COMMON_THEME;
     const eventCountPerDay = Object.entries(gridDateEventModelMap).map(_ref2 => {
       let [_, value] = _ref2;
       return value.length;
@@ -18265,7 +18264,8 @@ function DayGridMonth(_ref) {
       className: cls('month-week-item'),
       style: {
         height: toPercent(rowHeight),
-        overflow: 'auto'
+        overflow: 'auto',
+        borderTop: border
       },
       ref: ref
     }, h("div", {
