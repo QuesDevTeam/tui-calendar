@@ -31,7 +31,7 @@ var __objRest = (source, exclude) => {
 };
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Sat Nov 25 2023
+ * @version 2.1.3 | Mon Nov 27 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -9532,7 +9532,11 @@ function DayGridMonth({
     return /* @__PURE__ */ h$3("div", {
       key: `dayGrid-events-${rowIndex}`,
       className: cls("month-week-item"),
-      style: { height: toPercent(rowHeight), overflow: "auto", borderTop: border },
+      style: {
+        height: toPercent(rowHeight),
+        overflow: isOneEventCalendar ? "hidden" : "auto",
+        borderTop: border
+      },
       ref
     }, /* @__PURE__ */ h$3("div", {
       className: cls("weekday"),

@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Sat Nov 25 2023
+ * @version 2.1.3 | Mon Nov 27 2023
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -18270,7 +18270,7 @@ function DayGridMonth(_ref) {
       className: cls('month-week-item'),
       style: {
         height: toPercent(rowHeight),
-        overflow: 'auto',
+        overflow: isOneEventCalendar ? 'hidden' : 'auto',
         borderTop: border
       },
       ref: ref
