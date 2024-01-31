@@ -6,6 +6,8 @@ interface Props {
     week: TZDate[];
     rowInfo: CellStyle[];
     contentAreaHeight: number;
+    isOneEventCalendar?: boolean;
+    height?: number;
 }
 export declare const GridRow: import("preact").FunctionComponent<Props>;
 export {};

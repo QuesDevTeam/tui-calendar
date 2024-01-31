@@ -8,6 +8,7 @@ interface Props {
     parentContainer?: HTMLDivElement | null;
     events?: EventUIModel[];
     contentAreaHeight: number;
+    isOneEventCalendar?: boolean;
 }
-export declare function GridCell({ date, events, style, parentContainer, contentAreaHeight }: Props): h.JSX.Element;
+export declare function GridCell({ date, events, style, parentContainer, contentAreaHeight, isOneEventCalendar, }: Props): h.JSX.Element;
 export {};
