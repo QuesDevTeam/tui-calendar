@@ -1,6 +1,6 @@
 /*!
  * TOAST UI Calendar 2nd Edition
- * @version 2.1.3 | Wed Jan 31 2024
+ * @version 2.1.3 | Thu Feb 01 2024
  * @author NHN Cloud FE Development Lab <dl_javascript@nhn.com>
  * @license MIT
  */
@@ -10709,6 +10709,8 @@ function positionUIModels(start, end, matrices, iteratee) {
   matrices.forEach(matrix => {
     matrix.forEach(column => {
       column.forEach((uiModel, index) => {
+        var _uiModel$model$raw;
+
         if (!uiModel) {
           return;
         }
@@ -10716,7 +10718,7 @@ function positionUIModels(start, end, matrices, iteratee) {
         const ymd = datetime_toFormat(uiModel.getStarts(), 'YYYYMMDD');
         const dateLength = makeDateRange(toStartOfDay(uiModel.getStarts()), toEndOfDay(uiModel.getEnds()), MS_PER_DAY).length;
 
-        if (uiModel.model.raw.order) {
+        if ((_uiModel$model$raw = uiModel.model.raw) !== null && _uiModel$model$raw !== void 0 && _uiModel$model$raw.order) {
           uiModel.top = uiModel.model.raw.order;
         } else {
           uiModel.top = index;
